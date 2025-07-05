@@ -17,6 +17,9 @@ func NewApp(cfg *Config, storage *Storage) *App {
 	return &App{cfg: cfg, storage: storage, r: gin.Default()}
 }
 
+// TODO: implement API
+// TODO: show in browser timzeone when secret will be expired
+// TODO: russian lang support based on browser language
 
 func (a *App) Run() {
 	a.r.Use(gin.Recovery())
@@ -28,7 +31,7 @@ func (a *App) Run() {
 	a.r.POST("/retrieve", a.RetrieveSecret)
 	err := a.r.Run(fmt.Sprintf(":%d", a.cfg.ListenPort))
 	if err != nil {
-		log.Fatalf("can't start server: %v", err)
+		log.Fatalf("Can't start server: %v", err)
 	}
 }
 

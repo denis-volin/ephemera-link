@@ -28,7 +28,7 @@ type Config struct {
 func ReadConfig() *Config {
 	var cfg Config
 	if err := env.Parse(&cfg); err != nil {
-		log.Fatal("Error parsing ENV", err)
+		log.Fatal("Error parsing ENV: ", err)
 	}
 	return &cfg
 }
