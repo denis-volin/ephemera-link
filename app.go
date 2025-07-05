@@ -17,10 +17,6 @@ func NewApp(cfg *Config, storage *Storage) *App {
 	return &App{cfg: cfg, storage: storage, r: gin.Default()}
 }
 
-// TODO: implement API
-// TODO: show in browser timzeone when secret will be expired
-// TODO: russian lang support based on browser language
-
 func (a *App) Run() {
 	a.r.Use(gin.Recovery())
 	a.r.LoadHTMLGlob("templates/*")
