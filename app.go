@@ -17,7 +17,6 @@ func NewApp(cfg *Config, storage *Storage) *App {
 	return &App{cfg: cfg, storage: storage, r: gin.Default()}
 }
 
-// TODO: return 404 for non-exitent links
 
 func (a *App) Run() {
 	a.r.Use(gin.Recovery())
@@ -43,7 +42,7 @@ func (a *App) SaveSecret(c *gin.Context) {
 	if err != nil {
 		c.Error(err)
 		c.HTML(500, "error.tmpl", gin.H{
-			"error": "Can't save secret",
+			"error": "Can't save secret.",
 		})
 		return
 	}
@@ -68,11 +67,11 @@ func (a *App) RetrieveSecret(c *gin.Context) {
 	if err != nil {
 		c.Error(err)
 		c.HTML(500, "error.tmpl", gin.H{
-			"error": "Can't get secret",
+			"error": "This secret has already been viewed or the link is invalid.",
 		})
 		return
 	}
-	c.HTML(200, "retrieved.tmpl", gin.H{
+	c.HTML(200, "retrieve.tmpl", gin.H{
 		"secret": data,
 	})
 }
