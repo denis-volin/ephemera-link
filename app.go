@@ -17,6 +17,8 @@ func NewApp(cfg *Config, storage *Storage) *App {
 	return &App{cfg: cfg, storage: storage, r: gin.Default()}
 }
 
+// TODO: return 404 for non-exitent links
+
 func (a *App) Run() {
 	a.r.Use(gin.Recovery())
 	a.r.LoadHTMLGlob("templates/*")
@@ -37,7 +39,7 @@ func (a *App) Main(c *gin.Context) {
 
 func (a *App) SaveSecret(c *gin.Context) {
 	secret := c.PostForm("secret")
-	err, id, key := a.storage.SaveSecret(secret)
+	id, key, err := a.storage.SaveSecret(secret)
 	if err != nil {
 		c.Error(err)
 		c.HTML(500, "error.tmpl", gin.H{
@@ -62,7 +64,7 @@ func (a *App) OpenSecret(c *gin.Context){
 func (a *App) RetrieveSecret(c *gin.Context) {
 	id := c.PostForm("id")
 	token := c.PostForm("token")
-	err, data := a.storage.GetSecret(id, token)
+	data, err := a.storage.GetSecret(id, token)
 	if err != nil {
 		c.Error(err)
 		c.HTML(500, "error.tmpl", gin.H{

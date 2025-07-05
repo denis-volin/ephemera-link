@@ -15,11 +15,11 @@ func init() {
 }
 
 type Config struct {
-	ListenPort          int    `env:"LISTEN_PORT" envDefault:"8834"`
+	ListenPort          int    `env:"LISTEN_PORT" envDefault:"8080"`
 	KeyPart             string `env:"KEY_PART"`
 	PersistentStorage   bool   `env:"PERSISTENT_STORAGE" envDefault:"false"`
-	StoragePath         string `env:"STORAGE_PATH"`
-	IdLength            int    `env:"ID_LENGTH" envDefault:"8"`
+	StoragePath         string `env:"STORAGE_PATH" envDefault:"data"`
+	IDLength            int    `env:"ID_LENGTH" envDefault:"8"`
 	KeyLength           int    `env:"KEY_LENGTH" envDefault:"8"`
 	RunClearingInterval int    `env:"RUN_CLEARING_INTERVAL" envDefault:"1800"`
 	SecretsExpire       int    `env:"SECRETS_EXPIRE" envDefault:"86400"`
