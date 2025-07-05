@@ -42,6 +42,7 @@ func (a *App) Main(c *gin.Context) {
 func (a *App) SaveSecret(c *gin.Context) {
 	secret := c.PostForm("secret")
 	id, key, err := a.storage.SaveSecret(secret)
+	expire := a.cfg.SecretsExpire
 	if err != nil {
 		c.Error(err)
 		c.HTML(500, "error.tmpl", gin.H{
@@ -51,6 +52,7 @@ func (a *App) SaveSecret(c *gin.Context) {
 	}
 	c.HTML(200, "saved.tmpl", gin.H{
 		"link": "c/" + id + "/" + key,
+		"expire": expire,
 	})
 }
 
