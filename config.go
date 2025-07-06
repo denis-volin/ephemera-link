@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/caarlos0/env/v6"
-	"github.com/joho/godotenv"
 	"log"
 	"os"
+
+	"github.com/caarlos0/env/v6"
+	"github.com/joho/godotenv"
 )
 
 func init() {

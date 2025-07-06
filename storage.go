@@ -4,18 +4,19 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/go-co-op/gocron"
-	"go.etcd.io/bbolt"
 	"log"
 	"os"
 	"sync"
 	"time"
+
+	"github.com/go-co-op/gocron"
+	"go.etcd.io/bbolt"
 )
 
 type Secret struct {
-	ID string
-	Secret    []byte
-	Created   time.Time
+	ID      string
+	Secret  []byte
+	Created time.Time
 }
 
 func (s *Secret) TimeKey() []byte {
@@ -23,14 +24,16 @@ func (s *Secret) TimeKey() []byte {
 }
 
 type Storage struct {
-	cfg      *Config
-	data     map[string]*Secret
-	cron     *gocron.Scheduler
+	cfg  *Config
+	data map[string]*Secret
+	cron *gocron.Scheduler
 	sync.RWMutex
 }
 
-var TimeKeysName = []byte("timekeys")
-var ValueKeysName = []byte("valuekeys")
+var (
+	TimeKeysName  = []byte("timekeys")
+	ValueKeysName = []byte("valuekeys")
+)
 
 func NewStorage(cfg *Config) *Storage {
 	st := &Storage{cfg: cfg, data: make(map[string]*Secret), cron: gocron.NewScheduler(time.UTC)}
@@ -65,18 +68,18 @@ func NewStorage(cfg *Config) *Storage {
 
 func (s *Storage) SaveSecret(secret string) (id, key string, err error) {
 	key = RandString(s.cfg.KeyLength)
-	data, err := Encrypt(s.cfg.KeyPart + key, secret)
+	data, err := Encrypt(s.cfg.KeyPart+key, secret)
 	if err != nil {
 		return
 	}
 	sec := &Secret{
-		Secret:    data,
-		Created:   time.Now(),
+		Secret:  data,
+		Created: time.Now(),
 	}
 	if s.cfg.PersistentStorage {
-		err =  s.savePersistent(sec)
+		err = s.savePersistent(sec)
 	} else {
-		err =  s.saveLocal(sec)
+		err = s.saveLocal(sec)
 	}
 	id = sec.ID
 	return
@@ -128,7 +131,6 @@ func (s *Storage) saveLocal(secret *Secret) error {
 	defer s.Unlock()
 	id := RandString(s.cfg.IDLength)
 	for _, ok := s.data[id]; ok; id = RandString(s.cfg.IDLength) {
-
 	}
 	secret.ID = id
 	s.data[id] = secret
@@ -166,7 +168,7 @@ func (s *Storage) getPersistent(id, key string) (string, error) {
 		if err := json.Unmarshal(v, sec); err != nil {
 			return err
 		}
-		data, err = Decrypt(s.cfg.KeyPart + key, sec.Secret)
+		data, err = Decrypt(s.cfg.KeyPart+key, sec.Secret)
 		if err != nil {
 			return err
 		}
@@ -184,7 +186,7 @@ func (s *Storage) getLocal(id, key string) (string, error) {
 	if !ok {
 		return "", fmt.Errorf("secret not found")
 	}
-	data, err := Decrypt(s.cfg.KeyPart + key, sec.Secret)
+	data, err := Decrypt(s.cfg.KeyPart+key, sec.Secret)
 	if err != nil {
 		return "", err
 	}
@@ -208,7 +210,7 @@ func (s *Storage) clearExpired() {
 func (s *Storage) clearExpiredLocal() {
 	s.Lock()
 	defer s.Unlock()
-	expired := time.Now().Add(time.Duration(-1 * s.cfg.SecretsExpire) * time.Second)
+	expired := time.Now().Add(time.Duration(-1*s.cfg.SecretsExpire) * time.Second)
 	keysToDelete := make([]string, 0)
 	for k, v := range s.data {
 		if v.Created.Before(expired) {
@@ -234,7 +236,7 @@ func (s *Storage) clearExpiredPersistent() {
 		bValue := tx.Bucket(ValueKeysName)
 		timeKeysToDelete := make([][]byte, 0)
 		valueKeysToDelete := make([][]byte, 0)
-		max := []byte(time.Now().Add(time.Duration(-1 * s.cfg.SecretsExpire) * time.Second).Format(time.RFC3339))
+		max := []byte(time.Now().Add(time.Duration(-1*s.cfg.SecretsExpire) * time.Second).Format(time.RFC3339))
 		for k, v := c.First(); k != nil && bytes.Compare(k, max) <= 0; k, v = c.Next() {
 			timeKeysToDelete = append(timeKeysToDelete, k)
 			valueKeysToDelete = append(valueKeysToDelete, v)
@@ -249,4 +251,3 @@ func (s *Storage) clearExpiredPersistent() {
 		return nil
 	})
 }
-

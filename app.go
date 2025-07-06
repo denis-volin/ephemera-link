@@ -2,15 +2,16 @@ package main
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 type App struct {
-	cfg *Config
+	cfg     *Config
 	storage *Storage
-	r *gin.Engine
+	r       *gin.Engine
 }
 
 func NewApp(cfg *Config, storage *Storage) *App {
@@ -48,16 +49,16 @@ func (a *App) SaveSecret(c *gin.Context) {
 		return
 	}
 	c.HTML(200, "saved.tmpl", gin.H{
-		"link": a.cfg.URI + "c/" + id + "/" + key,
+		"link":   a.cfg.URI + "c/" + id + "/" + key,
 		"expire": expire,
 	})
 }
 
-func (a *App) OpenSecret(c *gin.Context){
+func (a *App) OpenSecret(c *gin.Context) {
 	id := c.Param("id")
 	token := c.Param("token")
 	c.HTML(200, "view.tmpl", gin.H{
-		"id": id,
+		"id":    id,
 		"token": token,
 	})
 }
