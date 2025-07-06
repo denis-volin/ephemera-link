@@ -21,6 +21,7 @@ func (a *App) Run() {
 	a.r.Use(gin.Recovery())
 	a.r.LoadHTMLGlob("templates/*")
 	a.r.Static("/static", "static")
+	a.r.Static("/favicon.ico", "static/favicon.ico")
 	a.r.GET("/", a.Main)
 	a.r.GET("/c/:id/:token", a.OpenSecret)
 	a.r.POST("/", a.SaveSecret)
