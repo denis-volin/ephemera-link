@@ -19,7 +19,7 @@ Or via environment variables.
 |----------|---------------|-------------|
 | URI | `http://localhost:8080/` | Root URI with schema for links |
 | LISTEN_PORT | `8080` | On which TCP port app should listen |
-| KEY_PART | | Secret string for encryption (`pwgen -cnsy 24 1`) |
+| KEY_PART | | Secret string for encryption (`pwgen -cns 24 1`) |
 | PERSISTENT_STORAGE | `false` | Bool: store data in memory or in database file |
 | STORAGE_PATH | `data` | Path to database folder |
 | ID_LENGTH | `8` | First random part of the link |
@@ -32,7 +32,7 @@ Sample `.env` file:
 ```sh
 DOMAIN=https://secret.example.com/
 LISTEN_PORT=8080
-KEY_PART='xgfhY>Wek7g*-WGc<yAy|YFR'
+KEY_PART='Gmd6QO6W1wjEDcugEbBGPcXS'
 PERSISTENT_STORAGE=true
 STORAGE_PATH=/app/data
 ID_LENGTH=8
