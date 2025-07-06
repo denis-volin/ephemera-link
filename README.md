@@ -5,9 +5,10 @@ Simple web app for creating encrypted secrets that can be viewed only once via u
 ## Features
 
 - All in one Go binary.
+- System light/dark theme.
+- Unique link to a secret with a configurable length.
 - The data can be stored in memory or in a database file.
 - The data is encrypted with the AES-256 algorithm.
-- Unique link to a secret with a configurable length.
 
 ## Configuration
 
