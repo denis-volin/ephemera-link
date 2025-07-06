@@ -50,10 +50,18 @@ docker run --name ephemera-link -d -p 8080:8080 --env-file .env -v data:/app/dat
 
 ## Screenshots
 
+Index page:
+
 ![Index page](screenshots/index.png "Index page")
+
+Saved page:
 
 ![Saved page](screenshots/saved.png "Saved page")
 
+View page:
+
 ![View page](screenshots/view.png "View page")
+
+Retrieve page:
 
 ![Retrieve page](screenshots/retrieve.png "Retrieve page")
