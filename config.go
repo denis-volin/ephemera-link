@@ -15,6 +15,7 @@ func init() {
 }
 
 type Config struct {
+	URI                 string `env:"URI" envDefault:"http://localhost:8080/"`
 	ListenPort          int    `env:"LISTEN_PORT" envDefault:"8080"`
 	KeyPart             string `env:"KEY_PART"`
 	PersistentStorage   bool   `env:"PERSISTENT_STORAGE" envDefault:"false"`

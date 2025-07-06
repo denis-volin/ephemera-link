@@ -24,7 +24,7 @@ func (a *App) Run() {
 	a.r.Static("/favicon.ico", "static/favicon.ico")
 	a.r.GET("/", a.Main)
 	a.r.GET("/c/:id/:token", a.OpenSecret)
-	a.r.POST("/", a.SaveSecret)
+	a.r.POST("/saved", a.SaveSecret)
 	a.r.POST("/retrieve", a.RetrieveSecret)
 	err := a.r.Run(fmt.Sprintf(":%d", a.cfg.ListenPort))
 	if err != nil {
@@ -48,7 +48,7 @@ func (a *App) SaveSecret(c *gin.Context) {
 		return
 	}
 	c.HTML(200, "saved.tmpl", gin.H{
-		"link": "c/" + id + "/" + key,
+		"link": a.cfg.URI + "c/" + id + "/" + key,
 		"expire": expire,
 	})
 }
