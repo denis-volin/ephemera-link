@@ -2,15 +2,16 @@ package main
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 type App struct {
-	cfg *Config
+	cfg     *Config
 	storage *Storage
-	r *gin.Engine
+	r       *gin.Engine
 }
 
 func NewApp(cfg *Config, storage *Storage) *App {
@@ -21,13 +22,14 @@ func (a *App) Run() {
 	a.r.Use(gin.Recovery())
 	a.r.LoadHTMLGlob("templates/*")
 	a.r.Static("/static", "static")
+	a.r.Static("/favicon.ico", "static/favicon.ico")
 	a.r.GET("/", a.Main)
 	a.r.GET("/c/:id/:token", a.OpenSecret)
-	a.r.POST("/", a.SaveSecret)
+	a.r.POST("/saved", a.SaveSecret)
 	a.r.POST("/retrieve", a.RetrieveSecret)
 	err := a.r.Run(fmt.Sprintf(":%d", a.cfg.ListenPort))
 	if err != nil {
-		log.Fatalf("can't start server: %v", err)
+		log.Fatalf("Can't start server: %v", err)
 	}
 }
 
@@ -37,24 +39,26 @@ func (a *App) Main(c *gin.Context) {
 
 func (a *App) SaveSecret(c *gin.Context) {
 	secret := c.PostForm("secret")
-	err, id, key := a.storage.SaveSecret(secret)
+	id, key, err := a.storage.SaveSecret(secret)
+	expire := a.cfg.SecretsExpire
 	if err != nil {
 		c.Error(err)
 		c.HTML(500, "error.tmpl", gin.H{
-			"error": "Can't save secret",
+			"error": "Can't save secret.",
 		})
 		return
 	}
 	c.HTML(200, "saved.tmpl", gin.H{
-		"link": "c/" + id + "/" + key,
+		"link":   a.cfg.URI + "c/" + id + "/" + key,
+		"expire": expire,
 	})
 }
 
-func (a *App) OpenSecret(c *gin.Context){
+func (a *App) OpenSecret(c *gin.Context) {
 	id := c.Param("id")
 	token := c.Param("token")
 	c.HTML(200, "view.tmpl", gin.H{
-		"id": id,
+		"id":    id,
 		"token": token,
 	})
 }
@@ -62,15 +66,15 @@ func (a *App) OpenSecret(c *gin.Context){
 func (a *App) RetrieveSecret(c *gin.Context) {
 	id := c.PostForm("id")
 	token := c.PostForm("token")
-	err, data := a.storage.GetSecret(id, token)
+	data, err := a.storage.GetSecret(id, token)
 	if err != nil {
 		c.Error(err)
 		c.HTML(500, "error.tmpl", gin.H{
-			"error": "Can't get secret",
+			"error": "This secret has already been viewed or the link is invalid.",
 		})
 		return
 	}
-	c.HTML(200, "retrieved.tmpl", gin.H{
+	c.HTML(200, "retrieve.tmpl", gin.H{
 		"secret": data,
 	})
 }

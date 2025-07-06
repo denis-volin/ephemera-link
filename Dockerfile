@@ -1,9 +1,11 @@
-FROM golang:1.20.6-bookworm AS builder
+FROM golang:1.23.0-bookworm AS builder
+
 WORKDIR /build
 COPY . ./
 RUN go build -o ephemera-link .
 
 FROM debian:bookworm
+
 WORKDIR /app
 COPY --from=builder /build/ephemera-link /app/ephemera-link
 COPY --from=builder /build/templates /app/templates

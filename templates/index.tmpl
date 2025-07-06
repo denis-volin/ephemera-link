@@ -1,36 +1,37 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="auto">
+  <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ephemera Link</title>
-    <link rel="stylesheet" type="text/css" href="static/view.css" media="all">
-    <script type="text/javascript" src="static/view.js"></script>
-
-</head>
-<body id="main_body">
-
-<img id="top" src="static/top.png" alt="">
-<div id="form_container">
-    <h1><a>Ephemera Link</a></h1>
-    <form class="appnitro form" method="post" action="">
-        <div class="form_description">
-            <h2>Create your secret</h2>
-        </div>
-        <ul>
-            <li id="li_1">
-                <label class="description" for="secret">Secret </label>
-                <div>
-                    <textarea id="secret" name="secret" class="element textarea medium"></textarea>
-                </div>
-            </li>
-
-            <li class="buttons">
-                <input id="save" class="button_text" type="submit" name="submit" value="Save"/>
-            </li>
-        </ul>
-    </form>
-</div>
-<img id="bottom" src="static/bottom.png" alt="">
-</body>
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/static/favicon/site.webmanifest">
+    <!-- Styles and fonts -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link href="/static/styles.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="center-container">
+      <h1 class="text-center mb-3">Ephemera Link</h1>
+      <div class="secret-container theme-card">
+        <h2 class="text-center mb-4">Create Secret</h2>
+        <form id="secretForm" method="post" action="/saved">
+          <div class="text-center mb-3">
+            <label for="secretInput" class="form-label">Enter your secret:</label>
+            <textarea id="secret" name="secret" class="form-control theme-form-control space-mono-regular" rows="5" autofocus required></textarea>
+          </div>
+          <label for="secretInput" class="form-label text-center mb-3">Your secret will be encrypted and can only be viewed once.</label>
+          <button id="save" type="submit" class="btn btn-primary w-100">Create Secret</button>
+        </form>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
 </html>
