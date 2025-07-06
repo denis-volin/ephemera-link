@@ -1,16 +1,13 @@
 # ephemera-link
 
-One-time links (simple secret pusher)
+Simple web app for creating encrypted secrets that can be viewed only once via unique random link.
 
-## Description
+## Features
 
-The data is stored in memory or in a database file (see .env.sample for details).
-
-The data is encrypted with the AES-256 algorithm.
-
-The encryption key consists of a common part stored in an environment variable and a unique part.
-A unique part is generated for each secret and passed in the link.
-The link also contains a unique identifier for the secret.
+- All in one Go binary.
+- The data can be stored in memory or in a database file.
+- The data is encrypted with the AES-256 algorithm.
+- Unique link to a secret with a configurable length.
 
 ## Configuration
 
@@ -35,7 +32,7 @@ Sample `.env` file:
 ```sh
 DOMAIN=https://secret.example.com/
 LISTEN_PORT=8080
-KEY_PART='x`fhY>Wek7g*-WGc<yAy|YFR'
+KEY_PART='xgfhY>Wek7g*-WGc<yAy|YFR'
 PERSISTENT_STORAGE=true
 STORAGE_PATH=/app/data
 ID_LENGTH=8
@@ -51,8 +48,12 @@ docker build -t ephemera-link .
 docker run --name ephemera-link -d -p 8080:8080 --env-file .env -v data:/app/data ephemera-link
 ```
 
-## TODO
+## Screenshots
 
-1. Implement Russian language support.
-1. Describe features and add screenshots in README.
-1. Implement API for secret generation.
+![Index page](screenshots/index.png "Index page")
+
+![Saved page](screenshots/saved.png "Saved page")
+
+![View page](screenshots/view.png "View page")
+
+![Retrieve page](screenshots/retrieve.png "Retrieve page")
