@@ -83,22 +83,44 @@ docker run --name ephemera-link -d -p 8080:8080 --env-file .env -v data:/app/dat
 
 ## Screenshots
 
+<details>
+  <summary>Light theme</summary>
+
 Index page:
 
-![Index page](screenshots/index.png "Index page")
+![Index page](screenshots/light/index.png "Index page")
 
 Saved page:
 
-![Saved page](screenshots/saved.png "Saved page")
+![Saved page](screenshots/light/saved.png "Saved page")
 
 View page:
 
-![View page](screenshots/view.png "View page")
+![View page](screenshots/light/view.png "View page")
 
 Retrieve page:
 
-![Retrieve page](screenshots/retrieve.png "Retrieve page")
+![Retrieve page](screenshots/light/retrieve.png "Retrieve page")
 
-## TODO
+</details>
 
-- Add dark theme screenshots.
+<details>
+  <summary>Dark theme</summary>
+
+Index page:
+
+![Index page](screenshots/dark/index.png "Index page")
+
+Saved page:
+
+![Saved page](screenshots/dark/saved.png "Saved page")
+
+View page:
+
+![View page](screenshots/dark/view.png "View page")
+
+Retrieve page:
+
+![Retrieve page](screenshots/dark/retrieve.png "Retrieve page")
+
+</details>
