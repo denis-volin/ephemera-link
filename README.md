@@ -7,6 +7,7 @@ Simple web app for creating encrypted secrets that can be viewed only once via u
 - All in one Go binary.
 - System light/dark theme.
 - Unique link to a secret with a configurable length.
+- Simple API for creating and retrieving secrets.
 - The data can be stored in memory or in a database file.
 - The data is encrypted with the AES-256 algorithm.
 
@@ -42,6 +43,36 @@ RUN_CLEARING_INTERVAL=1800
 SECRETS_EXPIRE=86400
 ```
 
+## API
+
+Create secret `/api/create`:
+
+```sh
+$ echo -n "some secret text here" | curl -sSX POST http://localhost:8080/api/create --data-binary @- | jq
+{
+ "expires_at": "2025-07-13T15:55:17+03:00",
+ "expires_in_seconds": "86400",
+ "id": "gzF3tLzP",
+ "key": "CZOzcJU2",
+ "link": "http://localhost:8080/c/gzF3tLzP/CZOzcJU2"
+}
+```
+
+Retrieve secret `/api/retrieve`:
+
+```sh
+# With id and key
+$ echo -e '{
+  "id": "gzF3tLzP",
+  "key": "CZOzcJU2"
+}' | curl -sSX POST http://localhost:8080/api/retrieve --data-binary @-
+some secret text here
+
+# Or with link
+$ curl -sSX POST http://localhost:8080/api/retrieve -d '{"link": "http://localhost:8080/c/gzF3tLzP/CZOzcJU2"}'
+some secret text here
+```
+
 ## Build and run
 
 ```bash
@@ -66,3 +97,8 @@ View page:
 Retrieve page:
 
 ![Retrieve page](screenshots/retrieve.png "Retrieve page")
+
+## TODO
+
+- Add Russian language support.
+- Add dark theme screenshots.
