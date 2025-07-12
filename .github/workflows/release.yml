@@ -7,6 +7,7 @@ on:
 
 env:
   REGISTRY: dvolin/ephemera-link
+  GO_VERSION: 1.23.0
 
 jobs:
   build-and-push-docker-image:
@@ -49,3 +50,33 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}:${{ env.VERSION }}
             ${{ env.REGISTRY }}:latest
+
+  build-go-binaries:
+    name: Build Go binaries
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Extract version from tag
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+
+      - name: Build for Linux AMD64
+        run: |
+          GOOS=linux GOARCH=amd64 go build -o "bin/ephemera-link-${{ env.VERSION }}-linux-amd64" .
+      - name: Build for Linux ARM64
+        run: |
+          GOOS=linux GOARCH=arm64 go build -o "bin/ephemera-link-${{ env.VERSION }}-linux-arm64" .
+
+      - name: Upload artifacts to GitHub Packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: go-binaries
+          path: bin/
+          retention-days: 5
