@@ -1,16 +1,26 @@
-FROM golang:1.23.0-bookworm AS builder
+FROM --platform=$BUILDPLATFORM golang:1.23.0-bookworm AS builder
+
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+RUN echo "Building on $BUILDPLATFORM for $TARGETPLATFORM"
 
 WORKDIR /build
 COPY . ./
-RUN go build -o ephemera-link .
+RUN GOOS=linux GOARCH=$(echo ${TARGETPLATFORM} | cut -d '/' -f2) go build -o ephemera-link .
+
 
 FROM debian:bookworm
 
+LABEL org.opencontainers.image.description="Simple web app for creating encrypted secrets that can be viewed only once via unique random link."
+
 WORKDIR /app
+
 COPY --from=builder /build/ephemera-link /app/ephemera-link
 COPY --from=builder /build/templates /app/templates
 COPY --from=builder /build/static /app/static
+
 RUN apt update && apt install -y ca-certificates
+
 ENV GIN_MODE=release
+
 CMD ["./ephemera-link"]
-EXPOSE 8834
