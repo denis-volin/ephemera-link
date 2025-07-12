@@ -19,8 +19,6 @@ COPY --from=builder /build/ephemera-link /app/ephemera-link
 COPY --from=builder /build/templates /app/templates
 COPY --from=builder /build/static /app/static
 
-RUN apt update && apt install -y ca-certificates
-
 ENV GIN_MODE=release
 
 CMD ["./ephemera-link"]
