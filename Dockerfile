@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM golang:1.23.0-bookworm AS builder
+FROM --platform=$BUILDPLATFORM golang:1.23.0-alpine AS builder
 
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
@@ -9,7 +9,7 @@ COPY . ./
 RUN GOOS=linux GOARCH=$(echo ${TARGETPLATFORM} | cut -d '/' -f2) go build -o ephemera-link .
 
 
-FROM debian:bookworm
+FROM alpine:3
 
 LABEL org.opencontainers.image.description="Simple web app for creating encrypted secrets that can be viewed only once via unique random link."
 
