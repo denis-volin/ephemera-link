@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ephemera Link - View Secret</title>
+    <title>Ephemera Link - {{ translate "view_secret" .Language }}</title>
     <!-- Favicons -->
     <link rel="apple-touch-icon" sizes="180x180" href="/static/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon/favicon-32x32.png">
@@ -23,7 +23,7 @@
             <li>
               <input type="hidden" name="id" value="{{ .id }}">
               <input type="hidden" name="token" value="{{ .token }}">
-              <input id="retrieve" class="btn btn-primary" type="submit" name="submit" value="Show Secret">
+              <input id="retrieve" class="btn btn-primary" type="submit" name="submit" value="{{ translate "show_secret_button" .Language }}">
             </li>
           </ul>
         </form>

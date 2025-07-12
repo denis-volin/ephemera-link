@@ -1,10 +1,13 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 	"time"
 
@@ -27,13 +30,23 @@ func NewApp(cfg *Config, storage *Storage) *App {
 	return &App{cfg: cfg, storage: storage, r: gin.Default()}
 }
 
+var translations = make(map[string]map[string]string)
+
 func (a *App) Run() {
+	loadTranslations("locales/en.json", "en")
+	loadTranslations("locales/ru.json", "ru")
+	a.r.SetFuncMap(template.FuncMap{
+		"translate": translate,
+	})
+	a.r.Use(LanguageMiddleware())
+
 	a.r.Use(gin.Recovery())
 	a.r.LoadHTMLGlob("templates/*")
 	a.r.Static("/static", "static")
 	a.r.Static("/favicon.ico", "static/favicon.ico")
 	a.r.GET("/", a.Main)
 	a.r.GET("/c/:id/:token", a.OpenSecret)
+	a.r.GET("/setlang/:lang", a.SetLanguage)
 	a.r.POST("/saved", a.SaveSecret)
 	a.r.POST("/retrieve", a.RetrieveSecret)
 	a.r.POST("/api/create", a.SaveSecretAPI)
@@ -45,7 +58,9 @@ func (a *App) Run() {
 }
 
 func (a *App) Main(c *gin.Context) {
-	c.HTML(200, "index.tmpl", nil)
+	c.HTML(200, "index.html", gin.H{
+		"Language": c.MustGet("lang").(string),
+	})
 }
 
 func (a *App) SaveSecret(c *gin.Context) {
@@ -54,23 +69,26 @@ func (a *App) SaveSecret(c *gin.Context) {
 	expire := a.cfg.SecretsExpire
 	if err != nil {
 		c.Error(err)
-		c.HTML(500, "error.tmpl", gin.H{
-			"error": "Can't save secret.",
+		c.HTML(500, "error.html", gin.H{
+			"Language": c.MustGet("lang").(string),
+			"error":    "Can't save secret.",
 		})
 		return
 	}
-	c.HTML(200, "saved.tmpl", gin.H{
-		"link":   a.cfg.URI + "c/" + id + "/" + key,
-		"expire": expire,
+	c.HTML(200, "saved.html", gin.H{
+		"Language": c.MustGet("lang").(string),
+		"link":     a.cfg.URI + "c/" + id + "/" + key,
+		"expire":   expire,
 	})
 }
 
 func (a *App) OpenSecret(c *gin.Context) {
 	id := c.Param("id")
 	token := c.Param("token")
-	c.HTML(200, "view.tmpl", gin.H{
-		"id":    id,
-		"token": token,
+	c.HTML(200, "view.html", gin.H{
+		"Language": c.MustGet("lang").(string),
+		"id":       id,
+		"token":    token,
 	})
 }
 
@@ -80,13 +98,15 @@ func (a *App) RetrieveSecret(c *gin.Context) {
 	data, err := a.storage.GetSecret(id, token)
 	if err != nil {
 		c.Error(err)
-		c.HTML(500, "error.tmpl", gin.H{
-			"error": "This secret has already been viewed or the link is invalid.",
+		c.HTML(500, "error.html", gin.H{
+			"Language": c.MustGet("lang").(string),
+			"error":    translate("error_secret", c.MustGet("lang").(string)),
 		})
 		return
 	}
-	c.HTML(200, "retrieve.tmpl", gin.H{
-		"secret": data,
+	c.HTML(200, "retrieve.html", gin.H{
+		"Language": c.MustGet("lang").(string),
+		"secret":   data,
 	})
 }
 
@@ -182,4 +202,56 @@ func (a *App) RetrieveSecretAPI(c *gin.Context) {
 		})
 		return
 	}
+}
+
+func loadTranslations(path, lang string) {
+	file, err := os.ReadFile(path)
+	if err != nil {
+		panic("failed to load translation file: " + path)
+	}
+	var data map[string]string
+	if err := json.Unmarshal(file, &data); err != nil {
+		panic("failed to parse translation file: " + path)
+	}
+	translations[lang] = data
+}
+
+func translate(key string, lang string) string {
+	if t, ok := translations[lang]; ok {
+		if val, ok := t[key]; ok {
+			return val
+		}
+	}
+	return key
+}
+
+func LanguageMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var lang string
+
+		if l, err := c.Cookie("lang"); err == nil {
+			lang = l
+		} else {
+			acceptLang := c.GetHeader("Accept-Language")
+			if strings.Contains(acceptLang, "ru") {
+				lang = "ru"
+			} else {
+				lang = "en"
+			}
+		}
+
+		if lang != "en" && lang != "ru" {
+			lang = "en"
+		}
+
+		c.Set("lang", lang)
+		c.SetCookie("lang", lang, 365*24*60*60, "/", "", false, true)
+		c.Next()
+	}
+}
+
+func (a *App) SetLanguage(c *gin.Context) {
+	lang := c.Param("lang")
+	c.SetCookie("lang", lang, 365*24*60*60, "/", "", false, true)
+	c.Redirect(http.StatusFound, "/")
 }

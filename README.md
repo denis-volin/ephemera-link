@@ -8,6 +8,7 @@ Simple web app for creating encrypted secrets that can be viewed only once via u
 - System light/dark theme.
 - Unique link to a secret with a configurable length.
 - Simple API for creating and retrieving secrets.
+- Russian language support.
 - The data can be stored in memory or in a database file.
 - The data is encrypted with the AES-256 algorithm.
 
@@ -100,5 +101,4 @@ Retrieve page:
 
 ## TODO
 
-- Add Russian language support.
 - Add dark theme screenshots.
