@@ -87,9 +87,6 @@ jobs:
           tar -czvf ${{ env.ARM64_NAME }}.tar.gz ${{ env.ARM64_NAME }}
           zip -r ${{ env.ARM64_NAME }}.zip ${{ env.ARM64_NAME }}
 
-      - name: Prepare release archives
-        run: |
-
       - name: Upload release assets
         uses: softprops/action-gh-release@v2
         with:
