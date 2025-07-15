@@ -73,7 +73,7 @@ jobs:
         run: |
           GOOS=linux GOARCH=amd64 go build -o "bin/${{ env.AMD64_NAME }}" .
           mkdir -vp ${{ env.AMD64_NAME }}
-          cp -vr LISENSE README.md templates static locales ${{ env.AMD64_NAME }}/
+          cp -vr LICENSE README.md templates static locales ${{ env.AMD64_NAME }}/
           cp -v bin/${{ env.AMD64_NAME }} ${{ env.AMD64_NAME }}/ephemera-link
           tar -czvf ${{ env.AMD64_NAME }}.tar.gz ${{ env.AMD64_NAME }}
           zip -r ${{ env.AMD64_NAME }}.zip ${{ env.AMD64_NAME }}
@@ -82,7 +82,7 @@ jobs:
         run: |
           GOOS=linux GOARCH=arm64 go build -o "bin/${{ env.ARM64_NAME }}" .
           mkdir -vp ${{ env.ARM64_NAME }}
-          cp -vr LISENSE README.md templates static locales ${{ env.ARM64_NAME }}/
+          cp -vr LICENSE README.md templates static locales ${{ env.ARM64_NAME }}/
           cp -v bin/${{ env.ARM64_NAME }} ${{ env.ARM64_NAME }}/ephemera-link
           tar -czvf ${{ env.ARM64_NAME }}.tar.gz ${{ env.ARM64_NAME }}
           zip -r ${{ env.ARM64_NAME }}.zip ${{ env.ARM64_NAME }}
