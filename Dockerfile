@@ -18,6 +18,7 @@ WORKDIR /app
 COPY --from=builder /build/ephemera-link /app/ephemera-link
 COPY --from=builder /build/templates /app/templates
 COPY --from=builder /build/static /app/static
+COPY --from=builder /build/locales /app/locales
 
 ENV GIN_MODE=release
 
